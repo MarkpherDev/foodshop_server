@@ -1,5 +1,7 @@
 import { Request, Response } from 'express'
 import { UserService } from '../services/user.service'
+import { HttpException } from '../utils/HttpException'
+import { errorMessage } from '../utils/handleError'
 
 export class UserController {
 	static getUsers = async (req: Request, res: Response): Promise<void> => {
@@ -11,7 +13,7 @@ export class UserController {
 				message: 'Usuarios encontrados Satisfactoriamente'
 			})
 		} catch (error) {
-			res.status(404).json({ message: (error as Error).message })
+			errorMessage(res, error)
 		}
 	}
 
@@ -25,7 +27,7 @@ export class UserController {
 				token: response.token
 			})
 		} catch (error) {
-			res.status(401).json({ message: (error as Error).message })
+			errorMessage(res, error)
 		}
 	}
 
@@ -38,7 +40,7 @@ export class UserController {
 				token: response.token
 			})
 		} catch (error) {
-			res.status(400).json({ message: (error as Error).message })
+			errorMessage(res, error)
 		}
 	}
 }
