@@ -1,6 +1,7 @@
-import { ProductCategory, User } from '@prisma/client'
+import { Category, Product, User } from '@prisma/client'
 
 /** Auth */
+
 export type UserData = Pick<
 	User,
 	'first_name' | 'last_name' | 'email' | 'password'
@@ -25,15 +26,33 @@ export type AuthBody = Pick<User, 'email' | 'password'>
 
 /** Category */
 
-export type CategoryResponse = Pick<
-	ProductCategory,
-	'id' | 'name' | 'description'
+export type CategoryBody = Pick<Category, 'name' | 'description'>
+
+export type CategoryResponse = Pick<Category, 'id' | 'name' | 'description'>
+
+export type CategoryId = Category['id']
+
+export type CategoryUpdateBody = {
+	name?: Category['name']
+	description?: Category['description']
+}
+
+/** Product */
+
+export type ProductBody = Pick<
+	Product,
+	'name' | 'description' | 'precio' | 'categoryId'
 >
 
-export type CategoryId = ProductCategory['id']
+export type ProductResponse = Pick<
+	Product,
+	'name' | 'description' | 'precio' | 'image' | 'status'
+>
 
-export type CategoryBody = Pick<ProductCategory, 'name' | 'description'>
-export type CategoryUpdateBody = {
-	name?: ProductCategory['name']
-	description?: ProductCategory['description']
+export type CreateProductBody = ProductBody & {
+	image: Express.Multer.File
+}
+
+export type CreateProduct = ProductResponse & {
+	category: Category
 }

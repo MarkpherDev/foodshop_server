@@ -29,15 +29,15 @@ enum UserRole {
 }
 
 model Product {
-  id                Int             @id @default(autoincrement())
-  name              String
-  description       String
-  precio            Decimal
-  image             String
-  status            ProductStatus   @default(inactivo)
-  createdAt         DateTime        @default(now())
-  category          ProductCategory @relation(fields: [productCategoryId], references: [id])
-  productCategoryId Int
+  id          Int           @id @default(autoincrement())
+  name        String
+  description String
+  precio      Decimal
+  image       String
+  status      ProductStatus @default(inactivo)
+  createdAt   DateTime      @default(now())
+  category    Category      @relation(fields: [categoryId], references: [id])
+  categoryId  Int
 }
 
 enum ProductStatus {
@@ -45,7 +45,7 @@ enum ProductStatus {
   inactivo
 }
 
-model ProductCategory {
+model Category {
   id          Int       @id @default(autoincrement())
   name        String
   description String

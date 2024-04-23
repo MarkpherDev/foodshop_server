@@ -10,7 +10,7 @@ import { HttpException } from '../utils/HttpException'
 
 export class CategoryService {
 	static getCategories = async (): Promise<CategoryResponse[]> => {
-		const categories = await prisma.productCategory.findMany({
+		const categories = await prisma.category.findMany({
 			select: { id: true, name: true, description: true }
 		})
 
@@ -27,7 +27,7 @@ export class CategoryService {
 	static createCategory = async (
 		data: CategoryBody
 	): Promise<CategoryResponse> => {
-		const category = await prisma.productCategory.create({
+		const category = await prisma.category.create({
 			data,
 			select: { id: true, name: true, description: true }
 		})
@@ -42,7 +42,7 @@ export class CategoryService {
 	static getCategoryById = async (
 		id: CategoryId
 	): Promise<CategoryResponse> => {
-		const category = await prisma.productCategory.findUnique({
+		const category = await prisma.category.findUnique({
 			where: { id },
 			select: { id: true, name: true, description: true }
 		})
@@ -64,7 +64,7 @@ export class CategoryService {
 			throw new HttpException(CODE.NOT_FOUND, 'La categoria no existe')
 		}
 
-		const updatedCategory = await prisma.productCategory.update({
+		const updatedCategory = await prisma.category.update({
 			where: { id: categoryFind.id },
 			data,
 			select: { id: true, name: true, description: true }
@@ -83,7 +83,7 @@ export class CategoryService {
 	static deleteCategory = async (id: CategoryId): Promise<string> => {
 		const category = await this.getCategoryById(id)
 
-		await prisma.productCategory.delete({
+		await prisma.category.delete({
 			where: { id: category.id }
 		})
 
