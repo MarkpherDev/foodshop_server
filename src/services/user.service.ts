@@ -5,6 +5,8 @@ import {
 	generateJWT,
 	hashPassword
 } from '../utils/authHandler'
+import { CODE } from '../utils/constants'
+import { HttpException } from '../utils/HttpException'
 
 export class UserService {
 	static getUsers = async (): Promise<UserResponse[]> => {
@@ -19,7 +21,9 @@ export class UserService {
 			}
 		})
 
-		if (users.length === 0) throw new Error('No hay usuarios para mostrar')
+		if (users.length === 0) {
+			throw new HttpException(CODE.NOT_FOUND, 'No hay usuarios para mostrar')
+		}
 
 		return users
 	}
@@ -29,7 +33,9 @@ export class UserService {
 			where: { email: data.email }
 		})
 
-		if (userFind) throw new Error('El usuario ya existe')
+		if (userFind) {
+			throw new HttpException(CODE.BAD_REQUEST, 'El usuario ya existe')
+		}
 
 		data.password = await hashPassword(data.password)
 
@@ -55,11 +61,18 @@ export class UserService {
 			where: { email: data.email }
 		})
 
-		if (!userFind) throw new Error('El usuario no existe')
+		if (!userFind) {
+			throw new HttpException(CODE.NOT_FOUND, 'El usuario no existe')
+		}
 
 		const isPassword = await comparePassword(data.password, userFind.password)
 
-		if (!isPassword) throw new Error('La contraseña no es correcta')
+		if (!isPassword) {
+			throw new HttpException(
+				CODE.UNAUTHORIZED_ACCESS,
+				'La contraseña no es correcta'
+			)
+		}
 
 		const user: UserResponse = {
 			id: userFind.id,

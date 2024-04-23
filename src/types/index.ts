@@ -29,3 +29,11 @@ export type CategoryResponse = Pick<
 	ProductCategory,
 	'id' | 'name' | 'description'
 >
+
+export type CategoryId = ProductCategory['id']
+
+export type CategoryBody = Pick<ProductCategory, 'name' | 'description'>
+export type CategoryUpdateBody = {
+	name?: ProductCategory['name']
+	description?: ProductCategory['description']
+}
