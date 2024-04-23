@@ -1,6 +1,10 @@
 export const PORT: number = Number(process.env.PORT) || 3000
 export const JWT_SECRET: string = process.env.JWT_SECRET || ''
 
+export const CLOUDINARY_API_KEY = process.env.CLOUDINARY_API_KEY || ''
+export const CLOUDINARY_API_SECRET = process.env.CLOUDINARY_API_SECRET || ''
+export const CLOUDINARY_NAME = process.env.CLOUDINARY_NAME || ''
+
 export enum CODE {
 	BAD_REQUEST = 400,
 	NOT_FOUND = 404,
