@@ -41,12 +41,12 @@ export type CategoryUpdateBody = {
 
 export type ProductBody = Pick<
 	Product,
-	'name' | 'description' | 'precio' | 'categoryId'
+	'name' | 'description' | 'precio' | 'categoryId' | 'status'
 >
 
 export type ProductResponse = Pick<
 	Product,
-	'name' | 'description' | 'precio' | 'image' | 'status'
+	'name' | 'description' | 'precio' | 'image' | 'status' | 'categoryId'
 >
 
 export type CreateProductBody = ProductBody & {
@@ -56,3 +56,7 @@ export type CreateProductBody = ProductBody & {
 export type CreateProduct = ProductResponse & {
 	category: Category
 }
+
+export type ProductId = Product['id']
+
+export type UpdateProductBody = Partial<CreateProductBody>
