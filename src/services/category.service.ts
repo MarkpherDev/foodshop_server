@@ -48,7 +48,7 @@ export class CategoryService {
 		})
 
 		if (!category) {
-			throw new HttpException(CODE.NOT_FOUND, 'El Producto no existe')
+			throw new HttpException(CODE.NOT_FOUND, 'La Categoria no existe')
 		}
 
 		return category
