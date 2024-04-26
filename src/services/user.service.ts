@@ -1,5 +1,11 @@
 import { prisma } from '../config/prisma'
-import { AuthBody, AuthResponse, UserData, UserResponse } from '../types'
+import {
+	AuthBody,
+	AuthResponse,
+	UserData,
+	UserId,
+	UserResponse
+} from '../types'
 import {
 	comparePassword,
 	generateJWT,
@@ -84,5 +90,17 @@ export class UserService {
 		const token = generateJWT(user)
 
 		return { user, token }
+	}
+
+	static getUserById = async (id: UserId) => {
+		const user = await prisma.user.findUnique({
+			where: { id }
+		})
+
+		if (!user) {
+			throw new HttpException(CODE.NOT_FOUND, 'El usuario no existe')
+		}
+
+		return user
 	}
 }
