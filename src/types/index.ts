@@ -1,6 +1,7 @@
-import { Category, Product, User } from '@prisma/client'
+import { Category, Pedido, Product, User } from '@prisma/client'
 
 /** Auth */
+export type UserId = User['id']
 
 export type UserData = Pick<
 	User,
@@ -60,3 +61,6 @@ export type CreateProduct = ProductResponse & {
 export type ProductId = Product['id']
 
 export type UpdateProductBody = Partial<CreateProductBody>
+
+/** Pedidos */
+export type PedidoId = Pedido['id']
