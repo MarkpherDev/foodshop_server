@@ -21,6 +21,7 @@ model User {
   password      String
   typeUser      UserRole @default(user)
   fechaRegistro DateTime @default(now())
+  DetalleCompra Pedido[]
 }
 
 enum UserRole {
@@ -29,15 +30,16 @@ enum UserRole {
 }
 
 model Product {
-  id          Int           @id @default(autoincrement())
-  name        String
-  description String
-  precio      Decimal
-  image       String
-  status      ProductStatus @default(inactivo)
-  createdAt   DateTime      @default(now())
-  category    Category      @relation(fields: [categoryId], references: [id])
-  categoryId  Int
+  id            Int           @id @default(autoincrement())
+  name          String
+  description   String
+  precio        Decimal
+  image         String
+  status        ProductStatus @default(inactivo)
+  createdAt     DateTime      @default(now())
+  category      Category      @relation(fields: [categoryId], references: [id])
+  categoryId    Int
+  DetalleCompra Pedido[]
 }
 
 enum ProductStatus {
@@ -51,4 +53,14 @@ model Category {
   description String
   Product     Product[]
   createdAt   DateTime  @default(now())
+}
+
+model Pedido {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
+  userId    String
+  productId Int
+  cantidad  Int
+  createdAt DateTime @default(now())
 }
