@@ -1,4 +1,4 @@
-import { query, Request, Response } from 'express'
+import { Request, Response } from 'express'
 import { CategoryService } from '../services/category.service'
 import { errorMessage } from '../utils/handleError'
 
