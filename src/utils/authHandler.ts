@@ -1,5 +1,5 @@
 import { compare, genSalt, hash } from 'bcrypt'
-import { sign } from 'jsonwebtoken'
+import { sign, verify } from 'jsonwebtoken'
 import { JWT_SECRET } from './constants'
 import { Payload } from '../types'
 
@@ -22,4 +22,10 @@ export const generateJWT = (payload: Payload) => {
 	const token = sign(payload, JWT_SECRET, { expiresIn: '1d' })
 
 	return token
+}
+
+export const verifyToken = (token: string) => {
+	const decoded = verify(token, JWT_SECRET)
+
+	return decoded
 }
