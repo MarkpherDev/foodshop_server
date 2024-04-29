@@ -4,6 +4,8 @@ import colors from 'colors'
 
 server.listen(PORT, () => {
 	console.log(
-		colors.cyan(`API Corriendo Correctamente en http://localhost:3000/api/v1`)
+		colors.cyan(
+			`API Corriendo Correctamente en http://localhost:${PORT}/api/v1`
+		)
 	)
 })
