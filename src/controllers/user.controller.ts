@@ -1,44 +1,30 @@
 import { Request, Response } from 'express'
-import { UserService } from '../services/user.service'
-import { HttpException } from '../utils/HttpException'
 import { errorMessage } from '../utils/handleError'
+import userService from '../services/user.service'
+import { CODE } from '../utils/constants'
 
 export class UserController {
-	static getUsers = async (req: Request, res: Response): Promise<void> => {
+	static register = async (req: Request, res: Response) => {
 		try {
-			const response = await UserService.getUsers()
+			const { body } = req
+			const response = await userService.create(body)
 
-			res.status(200).json({
-				data: response,
-				message: 'Usuarios encontrados Satisfactoriamente'
-			})
+			res
+				.status(CODE.CREATED)
+				.json({ data: response, message: 'Usuario creado Correctamente' })
 		} catch (error) {
 			errorMessage(res, error)
 		}
 	}
-
-	static register = async (req: Request, res: Response): Promise<void> => {
+	static login = async (req: Request, res: Response) => {
 		try {
-			const response = await UserService.createUser(req.body)
+			const { body } = req
 
-			res.status(201).json({
-				message: 'Usuario Creado Satisfactoriamente',
-				data: response.user,
-				token: response.token
-			})
-		} catch (error) {
-			errorMessage(res, error)
-		}
-	}
+			const response = await userService.login(body)
 
-	static login = async (req: Request, res: Response): Promise<void> => {
-		try {
-			const response = await UserService.login(req.body)
-			res.status(200).json({
-				message: 'Logeado correctamente',
-				data: response.user,
-				token: response.token
-			})
+			res
+				.status(CODE.ACCEPTED)
+				.json({ data: response, message: 'Logeado Correctamente' })
 		} catch (error) {
 			errorMessage(res, error)
 		}
