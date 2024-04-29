@@ -1,101 +1,20 @@
+import { User } from '@prisma/client'
 import { prisma } from '../config/prisma'
+import { UserRepository } from '../repository/user.repository'
 import {
+	UserBody,
+	UserResponse,
 	AuthBody,
-	AuthResponse,
-	UserData,
-	UserId,
-	UserResponse
+	LoginResponse,
+	AuthPayload
 } from '../types'
-import {
-	comparePassword,
-	generateJWT,
-	hashPassword
-} from '../utils/authHandler'
 import { CODE } from '../utils/constants'
 import { HttpException } from '../utils/HttpException'
+import { comparePassword, generateJWT } from '../utils/authHandler'
 
-export class UserService {
-	static getUsers = async (): Promise<UserResponse[]> => {
-		const users = await prisma.user.findMany({
-			select: {
-				id: true,
-				first_name: true,
-				last_name: true,
-				typeUser: true,
-				email: true,
-				fechaRegistro: true
-			}
-		})
-
-		if (users.length === 0) {
-			throw new HttpException(CODE.NOT_FOUND, 'No hay usuarios para mostrar')
-		}
-
-		return users
-	}
-
-	static createUser = async (data: UserData): Promise<AuthResponse> => {
-		const userFind = await prisma.user.findUnique({
-			where: { email: data.email }
-		})
-
-		if (userFind) {
-			throw new HttpException(CODE.BAD_REQUEST, 'El usuario ya existe')
-		}
-
-		data.password = await hashPassword(data.password)
-
-		const user = await prisma.user.create({
-			data,
-			select: {
-				id: true,
-				first_name: true,
-				last_name: true,
-				typeUser: true,
-				email: true,
-				fechaRegistro: true
-			}
-		})
-
-		const token = generateJWT(user)
-
-		return { user, token }
-	}
-
-	static login = async (data: AuthBody): Promise<AuthResponse> => {
-		const userFind = await prisma.user.findUnique({
-			where: { email: data.email }
-		})
-
-		if (!userFind) {
-			throw new HttpException(CODE.NOT_FOUND, 'El usuario no existe')
-		}
-
-		const isPassword = await comparePassword(data.password, userFind.password)
-
-		if (!isPassword) {
-			throw new HttpException(
-				CODE.UNAUTHORIZED_ACCESS,
-				'La contraseña no es correcta'
-			)
-		}
-
-		const user: UserResponse = {
-			id: userFind.id,
-			first_name: userFind.first_name,
-			last_name: userFind.last_name,
-			email: userFind.email,
-			typeUser: userFind.typeUser
-		}
-		const token = generateJWT(user)
-
-		return { user, token }
-	}
-
-	static getUserById = async (id: UserId) => {
-		const user = await prisma.user.findUnique({
-			where: { id }
-		})
+class UserService implements UserRepository {
+	async getByEmail(email: string): Promise<User> {
+		const user: User | null = await prisma.user.findUnique({ where: { email } })
 
 		if (!user) {
 			throw new HttpException(CODE.NOT_FOUND, 'El usuario no existe')
@@ -103,4 +22,46 @@ export class UserService {
 
 		return user
 	}
+	async create(data: UserBody): Promise<UserResponse> {
+		const newUser: UserResponse = await prisma.user.create({ data })
+
+		if (!newUser) {
+			throw new HttpException(CODE.BAD_REQUEST, 'No se pudo crear el usuario')
+		}
+
+		return newUser
+	}
+
+	async login(data: AuthBody): Promise<LoginResponse> {
+		const user: User = await this.getByEmail(data.email)
+
+		const isPassword = comparePassword(data.password, user.password)
+
+		if (!isPassword) {
+			throw new HttpException(
+				CODE.UNAUTHORIZED_ACCESS,
+				'La contraseña no es correcta'
+			)
+		}
+		const payload: AuthPayload = {
+			id: user.id,
+			email: user.email,
+			type: user.type
+		}
+
+		const token = generateJWT(payload)
+
+		const authResponse: LoginResponse = {
+			id: user.id,
+			name: user.name,
+			lastname: user.lastname,
+			email: user.email,
+			type: user.type,
+			token
+		}
+
+		return authResponse
+	}
 }
+
+export default new UserService()
