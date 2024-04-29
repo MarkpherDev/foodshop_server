@@ -1,7 +1,7 @@
 import { compare, genSalt, hash } from 'bcrypt'
 import { sign, verify } from 'jsonwebtoken'
+import { AuthPayload } from '../types'
 import { JWT_SECRET } from './constants'
-import { Payload } from '../types'
 
 export const hashPassword = async (password: string) => {
 	const salt = await genSalt(10)
@@ -18,7 +18,7 @@ export const comparePassword = async (
 	return isPassword
 }
 
-export const generateJWT = (payload: Payload) => {
+export const generateJWT = (payload: AuthPayload) => {
 	const token = sign(payload, JWT_SECRET, { expiresIn: '1d' })
 
 	return token
