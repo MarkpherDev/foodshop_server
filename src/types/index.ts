@@ -1,4 +1,4 @@
-import { User } from '@prisma/client'
+import { Category, Product, User } from '@prisma/client'
 
 /** User Schema */
 export type UserBody = Pick<User, 'name' | 'lastname' | 'email' | 'password'>
@@ -15,3 +15,12 @@ export type LoginResponse = UserResponse & {
 export type AuthBody = Pick<User, 'email' | 'password'>
 
 export type AuthPayload = Pick<User, 'id' | 'email' | 'type'>
+
+/** Product */
+export type ProductBody = Pick<
+	Product,
+	'name' | 'description' | 'category' | 'price'
+> & {
+	image: Express.Multer.File
+}
+export type ProductUpdate = Partial<ProductBody>

@@ -34,19 +34,20 @@ model Product {
   id            Int             @id @default(autoincrement())
   name          String
   description   String
+  price         Float
   stock         Boolean         @default(true)
   image         String
-  category      Category?
+  category      Category        @default(comida)
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
   OrderProducts OrderProducts[]
 }
 
-model Category {
-  id        Int     @id @default(autoincrement())
-  name      String
-  product   Product @relation(fields: [productId], references: [id])
-  productId Int     @unique
+enum Category {
+  comida
+  bebida
+  combo
+  otros
 }
 
 model Order {
@@ -68,7 +69,6 @@ enum Status {
 model OrderProducts {
   id        Int     @id @default(autoincrement())
   quantity  Int
-  unitPrice Float
   order     Order   @relation(fields: [orderId], references: [id])
   orderId   Int
   product   Product @relation(fields: [productId], references: [id])
