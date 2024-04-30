@@ -2,10 +2,11 @@ import { unlink } from 'fs/promises'
 import cloudinary from '../config/cloudinary'
 import { CODE } from './constants'
 import { HttpException } from './HttpException'
+import { UploadApiResponse } from 'cloudinary'
 
 export const handleCloudinary = async (
 	image: Express.Multer.File
-): Promise<string> => {
+): Promise<UploadApiResponse> => {
 	if (!image) {
 		throw new HttpException(CODE.BAD_REQUEST, 'No se ingreso una imagen')
 	}
@@ -22,5 +23,5 @@ export const handleCloudinary = async (
 	const local = `${image.destination}/${image.filename}`
 	await unlink(local)
 
-	return res.secure_url
+	return res
 }
