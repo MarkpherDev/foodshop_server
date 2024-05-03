@@ -23,6 +23,12 @@ class UserService implements UserRepository {
 		return user
 	}
 	async create(data: UserBody): Promise<UserResponse> {
+		const userExists = await this.getByEmail(data.email)
+
+		if (userExists) {
+			throw new HttpException(CODE.BAD_REQUEST, 'El usuario ya existe')
+		}
+
 		const newUser: UserResponse = await prisma.user.create({ data })
 
 		if (!newUser) {
