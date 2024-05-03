@@ -31,16 +31,16 @@ enum Role {
 }
 
 model Product {
-  id            Int             @id @default(autoincrement())
+  id            Int            @id @default(autoincrement())
   name          String
   description   String
   price         Float
-  stock         Boolean         @default(true)
+  stock         Boolean        @default(true)
   image         String
-  category      Category        @default(comida)
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  OrderProducts OrderProducts[]
+  category      Category       @default(comida)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  OrderProducts OrderDetails[]
 }
 
 enum Category {
@@ -51,14 +51,14 @@ enum Category {
 }
 
 model Order {
-  id            Int             @id @default(autoincrement())
-  user          User            @relation(fields: [userId], references: [id])
+  id            Int            @id @default(autoincrement())
+  user          User           @relation(fields: [userId], references: [id])
   userId        String
-  state         Status          @default(pendiente)
-  total         Float
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  OrderProducts OrderProducts[]
+  state         Status         @default(pendiente)
+  total         Float          @default(0.00)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  OrderProducts OrderDetails[]
 }
 
 enum Status {
@@ -66,11 +66,13 @@ enum Status {
   pagado
 }
 
-model OrderProducts {
-  id        Int     @id @default(autoincrement())
-  quantity  Int
-  order     Order   @relation(fields: [orderId], references: [id])
-  orderId   Int
-  product   Product @relation(fields: [productId], references: [id])
-  productId Int
+model OrderDetails {
+  id         Int     @id @default(autoincrement())
+  quantity   Int
+  unit_price Float
+  subtotal   Float
+  order      Order   @relation(fields: [orderId], references: [id])
+  orderId    Int
+  product    Product @relation(fields: [productId], references: [id])
+  productId  Int
 }
