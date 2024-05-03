@@ -1,4 +1,4 @@
-import { Category, Product, User } from '@prisma/client'
+import { Order, OrderDetails, Product, User } from '@prisma/client'
 
 /** User Schema */
 export type UserBody = Pick<User, 'name' | 'lastname' | 'email' | 'password'>
@@ -24,3 +24,14 @@ export type ProductBody = Pick<
 	image: Express.Multer.File
 }
 export type ProductUpdate = Partial<ProductBody>
+
+/** Order */
+
+export type OrderBody = Pick<Order, 'userId'> & {
+	quantity: OrderDetails['quantity']
+	productId: Product['id']
+}
+
+export type OrderStatus = Pick<Order, 'state'>
+
+export type OrderUpdate = Partial<OrderStatus>
